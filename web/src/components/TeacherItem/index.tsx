@@ -1,43 +1,58 @@
 import React from 'react';
 
 import whatsAppIcon from '../../assets/images/icons/whatsapp.svg';
+import api from '../../services/api';
 
 import './styles.css'
 
-function TeacherItem() {
-    return (
-        <article className="teacher-item">
-            <header>
-                <img
-                    src="https://avatars0.githubusercontent.com/u/20111371?s=460&u=11f9cd15c1dd06cc423fc8ecb831dced3c3c30c2&v=4"
-                    alt="Foto de Augusto Schnorr"
-                />
-                <div>
-                    <strong>Augusto Schnorr</strong>
-                    <span>Matemática</span>
-                </div>
-            </header>
+export interface Teacher {
+  avatar: string;
+  bio: string;
+  cost: string;
+  phone: string;
+  id: number;
+  name: string;
+  subject: string;
+};
 
-            <p>
-                Entusiasta de tecnologia e filósofo caseiro.
-                        <br /><br />
-                        Apaixonado por aprender e ensinar, procura crescer a cada dia,
-                         transformando o seu entorno através de ações conscientes
-                         e responsáveis. Aprenda na prática e avançe para o próximo nível!
-                    </p>
+export interface TeacherItemProps {
+  teacher: Teacher;
+};
 
-            <footer>
-                <p>
-                    Preço/Hora
-                            <strong>R$ 80,00</strong>
-                </p>
-                <button type="button">
-                    <img src={whatsAppIcon} alt="Contatar via WhatsApp" />
-                            Entrar em contato
-                        </button>
-            </footer>
-        </article>
-    );
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher }) => {
+  function createNewConnection() {
+    api.post('connections', {
+      user_id: teacher.id
+    });
+  };
+
+  return (
+    <article className="teacher-item">
+      <header>
+        <img
+          src={teacher.avatar}
+          alt={`Foto de ${teacher.name}`}
+        />
+        <div>
+          <strong>{teacher.name}</strong>
+          <span>{teacher.subject}</span>
+        </div>
+      </header>
+
+      <p>{teacher.bio}</p>
+
+      <footer>
+        <p>
+          Preço/Hora
+          <strong>R$ {teacher.cost}</strong>
+        </p>
+        <a target="_blank" onClick={createNewConnection} href={`https://wa.me/${teacher.phone}`}>
+          <img src={whatsAppIcon} alt="Contatar via WhatsApp" />
+            Entrar em contato
+        </a>
+      </footer>
+    </article>
+  );
 };
 
 export default TeacherItem;
